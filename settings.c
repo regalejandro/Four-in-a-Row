@@ -9,14 +9,14 @@
  * 
 *********************************************************/
 
-#include <termios.h>
-#include <unistd.h>
+
 
 #include "settings.h"
 
 const GameRules CONNECT4 = {6, 7, 4};
 const GameRules CONNECT5 = {8, 9, 5};
 
+GameRules ruleset = {0};
 
 
 void enableRawMode(struct termios *old_tio) {

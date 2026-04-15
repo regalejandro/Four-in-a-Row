@@ -9,14 +9,15 @@
  * 
 *********************************************************/
 
+#include "connect4.h"
 #include "settings.h"
 
 #define RED 1
 #define YELLOW 2
 
-struct GameRules ruleset = CONNECT4;
-
 int main(int argc, char* argv[]) {
+
+	ruleset = CONNECT4;
 
 	int board[ruleset.rows][ruleset.cols];	// Row-major array of gameboard
 	int height[ruleset.cols];	// Tracks current height of chips in each col
@@ -29,18 +30,27 @@ int main(int argc, char* argv[]) {
 	return 0;
 }
 
-int play_game (int rows, int cols, int board[rows][cols], int height[cols]) {
+int play_game(int rows, int cols, int board[rows][cols], int height[cols]) {
 	int turn = RED;
 	int winner = 0;
 
 	// print board
 	render(rows, cols, board);
 
-	while (winner == 0) {
+	while (1) {
 
 		int play = make_play(rows, cols, height);
 		board[height[play]][play] = turn;
+		height[play]++;
 		
+
+		// print board
+		render(rows, cols, board);
+		
+		// Check for win
+		if ((winner = check_win(rows, cols, board)))
+			break;
+
 		// Switch turn
 		if (turn == RED) {
 			turn = YELLOW;
@@ -49,19 +59,19 @@ int play_game (int rows, int cols, int board[rows][cols], int height[cols]) {
 			turn = RED;
 		}
 
-		// Check for win
-		winner = check_win();
-
-		// print board
-		render(rows, cols, board);
-
 	}
 
-	// Print win screen
-	if (turn == RED)
-		printf("\nRED Wins!\n");
-	else if(turn == YELLOW)
-		printf("\nYELLOW Wins!\n");
+	if (winner == 2) {
+		printf("\nDRAW!\n");
+	}
+	else if (winner == 1) {
+		// Print win screen
+		if (turn == RED)
+			printf("\nRED Wins!\n");
+		else if(turn == YELLOW)
+			printf("\nYELLOW Wins!\n");
+	}
+
 
 	return 0;
 }
@@ -72,7 +82,7 @@ int make_play(int rows, int cols, int height[cols]) {
     enableRawMode(&old_tio);
 
 	int sel_col = (cols - 1) / 2;
-	char c;
+	char c = 0;
 
 	// Use stdin arrow keys to choose a number from 0 to max row
 	while(c != '\n' || height[sel_col] == rows) {
@@ -100,7 +110,6 @@ int make_play(int rows, int cols, int height[cols]) {
 
 	disableRawMode(&old_tio);
 
-	height[sel_col]++;
 	return sel_col;
 
 
@@ -109,12 +118,18 @@ int make_play(int rows, int cols, int height[cols]) {
 
 int check_win(int rows, int cols, int board[rows][cols]) {
 
+	int empty = 0;
+
 	for (int r = 0; r < rows; r++) {
 		for (int c = 0; c < cols; c++) {
 
+			if (board[r][c] == 0)
+				empty++;
+
 			// Horizontal (left to right)
 			if (c <= cols - ruleset.win_num) {
-				if (board[r][c] == board[r][c + 1] &&
+				if (board[r][c] != 0 &&
+					board[r][c] == board[r][c + 1] &&
 					board[r][c + 1] == board[r][c + 2] &&
 					board[r][c + 2] == board[r][c + 3])
 					return 1;
@@ -122,7 +137,8 @@ int check_win(int rows, int cols, int board[rows][cols]) {
 
 			// Vertical (top to bottom)
 			if (r <= rows - ruleset.win_num) {
-				if (board[r][c] == board[r + 1][c] &&
+				if (board[r][c] != 0 &&
+					board[r][c] == board[r + 1][c] &&
 					board[r + 1][c] == board[r + 2][c] &&
 					board[r + 2][c] == board[r + 3][c])
 					return 1;
@@ -130,7 +146,8 @@ int check_win(int rows, int cols, int board[rows][cols]) {
 
 			// Diagonal (down and right)
 			if (r <= rows - ruleset.win_num && c <= cols - ruleset.win_num) {
-				if (board[r][c] == board[r + 1][c + 1] &&
+				if (board[r][c] != 0 &&
+					board[r][c] == board[r + 1][c + 1] &&
 					board[r + 1][c + 1] == board[r + 2][c + 2] &&
 					board[r + 2][c + 2] == board[r + 3][c + 3])
 					return 1;
@@ -138,10 +155,15 @@ int check_win(int rows, int cols, int board[rows][cols]) {
 
 			// Diagonal (down and left)
 			if (r <= ruleset.win_num && c >= ruleset.win_num - 1) {
-				if (board[r][c] == board[r + 1][c - 1] &&
+				if (board[r][c] != 0 &&
+					board[r][c] == board[r + 1][c - 1] &&
 					board[r + 1][c - 1] == board[r + 2][c - 2] &&
 					board[r + 2][c - 2] == board[r + 3][c - 3])
 					return 1;
+			}
+
+			if (empty == 0 && r == rows - 1 && c == cols - 1) {
+				return 2;
 			}
 
 		}

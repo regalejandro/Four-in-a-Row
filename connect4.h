@@ -14,7 +14,7 @@
 #define CONNECT4_H
 
 
-int play_game (int rows, int cols, int board[rows][cols], int height[cols]);
+int play_game(int rows, int cols, int board[rows][cols], int height[cols]);
 int make_play(int rows, int cols, int height[cols]);
 int check_win(int rows, int cols, int board[rows][cols]);
 void render(int rows, int cols, int board[rows][cols]);
