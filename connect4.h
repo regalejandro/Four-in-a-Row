@@ -16,6 +16,7 @@
 #define BG_RED    "\033[41m"
 #define BG_YELLOW "\033[43m"
 #define BG_EMPTY  "\033[47m"  // white/gray
+#define BG_BOARD "\033[44m"   // blue
 #define RESET     "\033[0m"
 
 

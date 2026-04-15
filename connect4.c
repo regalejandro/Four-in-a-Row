@@ -72,7 +72,6 @@ int play_game(int rows, int cols, int board[rows][cols], int height[cols]) {
 			printf("\nYELLOW Wins!\n");
 	}
 
-
 	return 0;
 }
 
@@ -107,6 +106,8 @@ int make_play(int rows, int cols, int height[cols]) {
 
 		// print selection arrow
 	}
+
+	printf("\033[?25h");
 
 	disableRawMode(&old_tio);
 
@@ -174,36 +175,53 @@ int check_win(int rows, int cols, int board[rows][cols]) {
 
 }
 
+#define BG_BLUE   "\033[44m"
+#define RED_DISC  "\033[41m"
+#define YEL_DISC  "\033[43m"
+#define RESET     "\033[0m"
+
 void render(int rows, int cols, int board[rows][cols]) {
 
-    // Clear full terminal
     printf("\033[2J\033[H");
+    printf("\033[?25l");
+
+ 	// horizontal blue separator between rows
+    for (int c = 0; c < cols * 6; c++) {
+        printf(BG_BLUE " " RESET);
+    }
+    printf("\n");
 
     for (int r = rows - 1; r >= 0; r--) {
-
-        // Each logical row becomes 2 terminal rows
         for (int sub = 0; sub < 2; sub++) {
-
             for (int c = 0; c < cols; c++) {
 
-                // Choose color
-                const char *color;
-                if (board[r][c] == 1) color = BG_RED;
-                else if (board[r][c] == 2) color = BG_YELLOW;
-                else color = BG_EMPTY;
+                int val = board[r][c];
 
-                // 4-wide cell (makes it visually wider)
-                printf("%s    %s", color, RESET);
+                // LEFT GRID WALL (blue)
+                printf(BG_BLUE " " RESET);
 
-                // horizontal spacing between cells
-                if (c < cols - 1)
-                    printf("  "); // gap between columns
+                // SLOT CONTENT (NOT blue background)
+                if (val == 1) {
+                    printf(RED_DISC "    " RESET);
+                }
+                else if (val == 2) {
+                    printf(YEL_DISC "    " RESET);
+                }
+                else {
+                    printf("    "); // empty hole
+                }
+
+                // RIGHT GRID WALL (blue)
+                printf(BG_BLUE " " RESET);
             }
 
             printf("\n");
         }
 
-        // vertical spacing between rows
+        // horizontal blue separator between rows
+        for (int c = 0; c < cols * 6; c++) {
+            printf(BG_BLUE " " RESET);
+        }
         printf("\n");
     }
 
