@@ -35,17 +35,17 @@ int play_game(int rows, int cols, int board[rows][cols], int height[cols]) {
 	int winner = 0;
 
 	// print board
-	render(rows, cols, board);
+	render(rows, cols, board, -1);
 
 	while (1) {
 
-		int play = make_play(rows, cols, height);
+		int play = make_play(rows, cols, board, height);
 		board[height[play]][play] = turn;
 		height[play]++;
 		
 
 		// print board
-		render(rows, cols, board);
+		render(rows, cols, board, -1);
 		
 		// Check for win
 		if ((winner = check_win(rows, cols, board)))
@@ -75,7 +75,7 @@ int play_game(int rows, int cols, int board[rows][cols], int height[cols]) {
 	return 0;
 }
 
-int make_play(int rows, int cols, int height[cols]) {
+int make_play(int rows, int cols, int board[rows][cols], int height[cols]) {
 	
     struct termios old_tio;
     enableRawMode(&old_tio);
@@ -85,6 +85,8 @@ int make_play(int rows, int cols, int height[cols]) {
 
 	// Use stdin arrow keys to choose a number from 0 to max row
 	while(c != '\n' || height[sel_col] == rows) {
+
+		render(rows, cols, board, sel_col);
 
 		read(STDIN_FILENO, &c, 1);
 		if (c == '\x1b') { // escape sequence
@@ -104,7 +106,7 @@ int make_play(int rows, int cols, int height[cols]) {
             }
         }
 
-		// print selection arrow
+		
 	}
 
 	printf("\033[?25h");
@@ -175,24 +177,29 @@ int check_win(int rows, int cols, int board[rows][cols]) {
 
 }
 
-#define BG_BLUE   "\033[44m"
-#define RED_DISC  "\033[41m"
-#define YEL_DISC  "\033[43m"
-#define RESET     "\033[0m"
-
-void render(int rows, int cols, int board[rows][cols]) {
+void render(int rows, int cols, int board[rows][cols], int sel_col) {
 
     printf("\033[2J\033[H");
     printf("\033[?25l");
 
+	for (int c = 0; c < cols; c++) {
+		if (c == sel_col)
+			printf("   ↓   ");
+		else
+			printf("      ");
+	}
+	printf("\n");
+
  	// horizontal blue separator between rows
-    for (int c = 0; c < cols * 6; c++) {
+    for (int c = 0; c < cols * 6 + 2; c++) {
         printf(BG_BLUE " " RESET);
     }
     printf("\n");
 
     for (int r = rows - 1; r >= 0; r--) {
+    	
         for (int sub = 0; sub < 2; sub++) {
+        	printf(BG_BLUE " " RESET);
             for (int c = 0; c < cols; c++) {
 
                 int val = board[r][c];
@@ -214,12 +221,13 @@ void render(int rows, int cols, int board[rows][cols]) {
                 // RIGHT GRID WALL (blue)
                 printf(BG_BLUE " " RESET);
             }
+            printf(BG_BLUE " " RESET);
 
             printf("\n");
         }
 
         // horizontal blue separator between rows
-        for (int c = 0; c < cols * 6; c++) {
+        for (int c = 0; c < cols * 6 + 2; c++) {
             printf(BG_BLUE " " RESET);
         }
         printf("\n");
