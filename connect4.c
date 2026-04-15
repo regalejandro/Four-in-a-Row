@@ -176,12 +176,34 @@ int check_win(int rows, int cols, int board[rows][cols]) {
 
 void render(int rows, int cols, int board[rows][cols]) {
 
-    printf("\033[H"); // or "\033[2J\033[H" if you want full clear
+    // Clear full terminal
+    printf("\033[2J\033[H");
 
     for (int r = rows - 1; r >= 0; r--) {
-        for (int c = 0; c < cols; c++) {
-            printf("%d ", board[r][c]);
+
+        // Each logical row becomes 2 terminal rows
+        for (int sub = 0; sub < 2; sub++) {
+
+            for (int c = 0; c < cols; c++) {
+
+                // Choose color
+                const char *color;
+                if (board[r][c] == 1) color = BG_RED;
+                else if (board[r][c] == 2) color = BG_YELLOW;
+                else color = BG_EMPTY;
+
+                // 4-wide cell (makes it visually wider)
+                printf("%s    %s", color, RESET);
+
+                // horizontal spacing between cells
+                if (c < cols - 1)
+                    printf("  "); // gap between columns
+            }
+
+            printf("\n");
         }
+
+        // vertical spacing between rows
         printf("\n");
     }
 
