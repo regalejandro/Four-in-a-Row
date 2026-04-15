@@ -13,6 +13,8 @@
 #ifndef SETTINGS_H
 #define SETTINGS_H
 
+
+extern struct GameRules ruleset;
 extern const GameRules CONNECT4;
 extern const GameRules CONNECT5;
 
@@ -21,6 +23,7 @@ typedef struct {
 	int cols;
 	int win_num;
 } GameRules;
+
 
 
 void enableRawMode(struct termios *old_tio);

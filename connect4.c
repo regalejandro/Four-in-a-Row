@@ -14,9 +14,9 @@
 #define RED 1
 #define YELLOW 2
 
-int main(int argc, char* argv[]) {
+struct GameRules ruleset = CONNECT4;
 
-	struct GameRules ruleset = CONNECT4;
+int main(int argc, char* argv[]) {
 
 	int board[ruleset.rows][ruleset.cols];	// Row-major array of gameboard
 	int height[ruleset.cols];	// Tracks current height of chips in each col
@@ -34,14 +34,13 @@ int play_game (int rows, int cols, int board[rows][cols], int height[cols]) {
 	int winner = 0;
 
 	// print board
+	render(rows, cols, board);
 
 	while (winner == 0) {
 
 		int play = make_play(rows, cols, height);
-		board[height[play]][play];
-
-		// print board
-
+		board[height[play]][play] = turn;
+		
 		// Switch turn
 		if (turn == RED) {
 			turn = YELLOW;
@@ -51,14 +50,20 @@ int play_game (int rows, int cols, int board[rows][cols], int height[cols]) {
 		}
 
 		// Check for win
-		/*if (winner = check_win > 0) {
-	
-		}*/
+		winner = check_win();
+
+		// print board
+		render(rows, cols, board);
 
 	}
 
 	// Print win screen
+	if (turn == RED)
+		printf("\nRED Wins!\n");
+	else if(turn == YELLOW)
+		printf("\nYELLOW Wins!\n");
 
+	return 0;
 }
 
 int make_play(int rows, int cols, int height[cols]) {
@@ -91,9 +96,7 @@ int make_play(int rows, int cols, int height[cols]) {
         }
 
 		// print selection arrow
-		
 	}
-	
 
 	disableRawMode(&old_tio);
 
@@ -101,6 +104,51 @@ int make_play(int rows, int cols, int height[cols]) {
 	return sel_col;
 
 
+
+}
+
+int check_win(int rows, int cols, int board[rows][cols]) {
+
+	for (int r = 0; r < rows; r++) {
+		for (int c = 0; c < cols; c++) {
+
+			// Horizontal (left to right)
+			if (c <= cols - ruleset.win_num) {
+				if (board[r][c] == board[r][c + 1] &&
+					board[r][c + 1] == board[r][c + 2] &&
+					board[r][c + 2] == board[r][c + 3])
+					return 1;
+			}
+
+			// Vertical (top to bottom)
+			if (r <= rows - ruleset.win_num) {
+				if (board[r][c] == board[r + 1][c] &&
+					board[r + 1][c] == board[r + 2][c] &&
+					board[r + 2][c] == board[r + 3][c])
+					return 1;
+			}
+
+			// Diagonal (down and right)
+			if (r <= rows - ruleset.win_num && c <= cols - ruleset.win_num) {
+				if (board[r][c] == board[r + 1][c + 1] &&
+					board[r + 1][c + 1] == board[r + 2][c + 2] &&
+					board[r + 2][c + 2] == board[r + 3][c + 3])
+					return 1;
+			}
+
+			// Diagonal (down and left)
+			if (r <= ruleset.win_num && c >= ruleset.win_num - 1) {
+				if (board[r][c] == board[r + 1][c - 1] &&
+					board[r + 1][c - 1] == board[r + 2][c - 2] &&
+					board[r + 2][c - 2] == board[r + 3][c - 3])
+					return 1;
+			}
+
+		}
+
+	}
+
+	return 0;
 
 }
 
