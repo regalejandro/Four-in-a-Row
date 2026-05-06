@@ -122,6 +122,7 @@ int make_play(int rows, int cols, int board[rows][cols], int height[cols]) {
 int check_win(int rows, int cols, int board[rows][cols]) {
 
 	int empty = 0;
+	int found = 1;
 
 	for (int r = 0; r < rows; r++) {
 		for (int c = 0; c < cols; c++) {
@@ -131,51 +132,85 @@ int check_win(int rows, int cols, int board[rows][cols]) {
 
 			// Horizontal (left to right)
 			if (c <= cols - ruleset.win_num) {
-				if (board[r][c] != 0 &&
-					board[r][c] == board[r][c + 1] &&
-					board[r][c + 1] == board[r][c + 2] &&
-					board[r][c + 2] == board[r][c + 3])
+
+				found = 1;
+
+				if (board[r][c] == 0)
+					found = 0;
+
+				for (int n = 0; n < (ruleset.win_num - 1) && found == 1; n++) {
+					if (board[r][c + n] != board[r][c + (n + 1)])
+						found = 0;
+				}
+
+				if (found == 1)
 					return 1;
+
 			}
 
 			// Vertical (top to bottom)
 			if (r <= rows - ruleset.win_num) {
-				if (board[r][c] != 0 &&
-					board[r][c] == board[r + 1][c] &&
-					board[r + 1][c] == board[r + 2][c] &&
-					board[r + 2][c] == board[r + 3][c])
+
+				found = 1;
+
+				if (board[r][c] == 0)
+					found = 0;
+
+				for (int n = 0; n < (ruleset.win_num - 1) && found == 1; n++) {
+					if (board[r + n][c] != board[r + (n + 1)][c])
+						found = 0;
+				}
+				
+				if (found == 1)
 					return 1;
+
 			}
 
 			// Diagonal (down and right)
 			if (r <= rows - ruleset.win_num && c <= cols - ruleset.win_num) {
-				if (board[r][c] != 0 &&
-					board[r][c] == board[r + 1][c + 1] &&
-					board[r + 1][c + 1] == board[r + 2][c + 2] &&
-					board[r + 2][c + 2] == board[r + 3][c + 3])
+				
+				found = 1;
+
+				if (board[r][c] == 0)
+					found = 0;
+
+				for (int n = 0; n < (ruleset.win_num - 1) && found == 1; n++) {
+					if (board[r + n][c + n] != board[r + (n + 1)][c + (n + 1)])
+						found = 0;
+				}
+				
+				if (found == 1)
 					return 1;
+
 			}
 
 			// Diagonal (down and left)
 			if (r <= ruleset.win_num && c >= ruleset.win_num - 1) {
-				if (board[r][c] != 0 &&
-					board[r][c] == board[r + 1][c - 1] &&
-					board[r + 1][c - 1] == board[r + 2][c - 2] &&
-					board[r + 2][c - 2] == board[r + 3][c - 3])
+
+				found = 1;
+
+				if (board[r][c] == 0)
+					found = 0;
+
+				for (int n = 0; n < (ruleset.win_num - 1) && found == 1; n++) {
+					if (board[r + n][c - n] != board[r + (n + 1)][c - (n + 1)])
+						found = 0;
+				}
+				
+				if (found == 1)
 					return 1;
-			}
 
-			if (empty == 0 && r == rows - 1 && c == cols - 1) {
-				return 2;
 			}
-
 		}
-
 	}
+
+	if (empty == 0)
+		return 2;
 
 	return 0;
 
 }
+
 
 void render(int rows, int cols, int board[rows][cols], int sel_col) {
 
