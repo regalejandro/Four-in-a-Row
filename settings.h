@@ -23,8 +23,12 @@ typedef struct {
 	int win_num;
 } GameRules;
 
+extern const GameRules CONNECT3;
 extern const GameRules CONNECT4;
 extern const GameRules CONNECT5;
+extern const GameRules CONNECT6;
+
+
 
 extern GameRules ruleset;
 

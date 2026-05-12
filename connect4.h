@@ -20,9 +20,9 @@
 
 
 int play_game(int rows, int cols, int board[rows][cols], int height[cols]);
-int make_play(int rows, int cols, int board[rows][cols], int height[cols]);
+int make_play(int rows, int cols, int board[rows][cols], int height[cols], int turn);
 int check_win(int rows, int cols, int board[rows][cols]);
-void render(int rows, int cols, int board[rows][cols], int sel_col);
+void render(int rows, int cols, int board[rows][cols], int sel_col, int turn);
 
 
 

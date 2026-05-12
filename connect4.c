@@ -35,17 +35,14 @@ int play_game(int rows, int cols, int board[rows][cols], int height[cols]) {
 	int winner = 0;
 
 	// print board
-	render(rows, cols, board, -1);
+	render(rows, cols, board, -1, turn);
 
 	while (1) {
 
-		int play = make_play(rows, cols, board, height);
-		board[height[play]][play] = turn;
-		height[play]++;
-		
+		make_play(rows, cols, board, height, turn);
 
 		// print board
-		render(rows, cols, board, -1);
+		render(rows, cols, board, -1, turn);
 		
 		// Check for win
 		if ((winner = check_win(rows, cols, board)))
@@ -75,7 +72,7 @@ int play_game(int rows, int cols, int board[rows][cols], int height[cols]) {
 	return 0;
 }
 
-int make_play(int rows, int cols, int board[rows][cols], int height[cols]) {
+int make_play(int rows, int cols, int board[rows][cols], int height[cols], int turn) {
 	
     struct termios old_tio;
     enableRawMode(&old_tio);
@@ -86,7 +83,7 @@ int make_play(int rows, int cols, int board[rows][cols], int height[cols]) {
 	// Use stdin arrow keys to choose a number from 0 to max row
 	while(c != '\n' || height[sel_col] == rows) {
 
-		render(rows, cols, board, sel_col);
+		render(rows, cols, board, sel_col, turn);
 
 		read(STDIN_FILENO, &c, 1);
 		if (c == '\x1b') { // escape sequence
@@ -105,12 +102,13 @@ int make_play(int rows, int cols, int board[rows][cols], int height[cols]) {
                 }
             }
         }
-
-		
+	
 	}
 
-	printf("\033[?25h");
+	board[height[sel_col]][sel_col] = turn;
+	height[sel_col]++;
 
+	printf("\033[?25h");
 	disableRawMode(&old_tio);
 
 	return sel_col;
@@ -212,18 +210,30 @@ int check_win(int rows, int cols, int board[rows][cols]) {
 }
 
 
-void render(int rows, int cols, int board[rows][cols], int sel_col) {
+void render(int rows, int cols, int board[rows][cols], int sel_col, int turn) {
 
     printf("\033[2J\033[H");
     printf("\033[?25l");
 
-	for (int c = 0; c < cols; c++) {
-		if (c == sel_col)
-			printf("   ↓   ");
-		else
-			printf("      ");
+    for (int i = 0; i < 2; i++){
+		for (int c = 0; c < cols; c++) {
+			if (c == sel_col) {
+				if (turn == RED) {
+					printf("  "RED_DISC "    " RESET);
+				}
+				else if (turn == YELLOW) {
+					printf("  "YEL_DISC "    " RESET);
+				}
+			}
+			else {
+				printf("      ");
+			}
+
+		}
+
+		printf("\n");
 	}
-	printf("\n");
+
 
  	// horizontal blue separator between rows
     for (int c = 0; c < cols * 6 + 2; c++) {

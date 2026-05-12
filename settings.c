@@ -13,8 +13,10 @@
 
 #include "settings.h"
 
+const GameRules CONNECT3 = {5, 5, 3};
 const GameRules CONNECT4 = {6, 7, 4};
 const GameRules CONNECT5 = {8, 9, 5};
+const GameRules CONNECT6 = {9, 11, 6};
 
 GameRules ruleset = {0};
 
