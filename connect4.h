@@ -18,7 +18,6 @@
 #define YEL_DISC  "\033[43m"
 #define RESET     "\033[0m"
 
-
 int play_game(int rows, int cols, int board[rows][cols], int height[cols]);
 int make_play(int rows, int cols, int board[rows][cols], int height[cols], int turn);
 int check_win(int rows, int cols, int board[rows][cols]);

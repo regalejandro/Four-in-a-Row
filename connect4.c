@@ -17,7 +17,7 @@
 
 int main(int argc, char* argv[]) {
 
-	ruleset = CONNECT4;
+	handle_args(argc, argv);
 
 	int board[ruleset.rows][ruleset.cols];	// Row-major array of gameboard
 	int height[ruleset.cols];	// Tracks current height of chips in each col
@@ -29,6 +29,8 @@ int main(int argc, char* argv[]) {
 
 	return 0;
 }
+
+
 
 int play_game(int rows, int cols, int board[rows][cols], int height[cols]) {
 	int turn = RED;
@@ -57,6 +59,9 @@ int play_game(int rows, int cols, int board[rows][cols], int height[cols]) {
 		}
 
 	}
+
+	printf("\033[?25h");
+
 
 	if (winner == 2) {
 		printf("\nDRAW!\n");
@@ -108,7 +113,6 @@ int make_play(int rows, int cols, int board[rows][cols], int height[cols], int t
 	board[height[sel_col]][sel_col] = turn;
 	height[sel_col]++;
 
-	printf("\033[?25h");
 	disableRawMode(&old_tio);
 
 	return sel_col;

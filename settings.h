@@ -13,6 +13,8 @@
 #include <unistd.h>
 #include <string.h>
 #include <stdio.h>
+#include <ctype.h>
+#include <stdlib.h>
 
 #ifndef SETTINGS_H
 #define SETTINGS_H
@@ -32,6 +34,7 @@ extern const GameRules CONNECT6;
 
 extern GameRules ruleset;
 
+void handle_args(int argc, char* argv[]);
 void enableRawMode(struct termios *old_tio);
 void disableRawMode(struct termios *old_tio);
 
