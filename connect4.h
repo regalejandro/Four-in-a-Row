@@ -13,10 +13,13 @@
 #ifndef CONNECT4_H
 #define CONNECT4_H
 
-#define BG_BLUE   "\033[44m"
-#define RED_DISC  "\033[41m"
-#define YEL_DISC  "\033[43m"
-#define RESET     "\033[0m"
+#define BG_BLUE    		"\033[44m"
+#define RED_DISC   		"\033[41m"
+#define YEL_DISC   		"\033[43m"
+#define REDWIN_DISC   	"\033[101m"
+#define YELWIN_DISC		"\033[103m"
+#define BLINK_DISC 		"\033[5m"
+#define RESET      		"\033[0m"
 
 int play_game(int rows, int cols, int board[rows][cols], int height[cols]);
 int make_play(int rows, int cols, int board[rows][cols], int height[cols], int turn);

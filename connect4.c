@@ -14,6 +14,8 @@
 
 #define RED 1
 #define YELLOW 2
+#define REDWIN 3
+#define YELWIN 4
 
 int main(int argc, char* argv[]) {
 
@@ -60,8 +62,10 @@ int play_game(int rows, int cols, int board[rows][cols], int height[cols]) {
 
 	}
 
-	printf("\033[?25h");
+	// print board
+	render(rows, cols, board, -1, turn);
 
+	printf("\033[?25h");
 
 	if (winner == 2) {
 		printf("\nDRAW!\n");
@@ -69,9 +73,9 @@ int play_game(int rows, int cols, int board[rows][cols], int height[cols]) {
 	else if (winner == 1) {
 		// Print win screen
 		if (turn == RED)
-			printf("\nRED Wins!\n");
+			printf("\nRED Wins!\n\n");
 		else if(turn == YELLOW)
-			printf("\nYELLOW Wins!\n");
+			printf("\nYELLOW Wins!\n\n");
 	}
 
 	return 0;
@@ -107,7 +111,6 @@ int make_play(int rows, int cols, int board[rows][cols], int height[cols], int t
                 }
             }
         }
-	
 	}
 
 	board[height[sel_col]][sel_col] = turn;
@@ -125,6 +128,7 @@ int check_win(int rows, int cols, int board[rows][cols]) {
 
 	int empty = 0;
 	int found = 1;
+	int found_color = 0;
 
 	for (int r = 0; r < rows; r++) {
 		for (int c = 0; c < cols; c++) {
@@ -145,8 +149,13 @@ int check_win(int rows, int cols, int board[rows][cols]) {
 						found = 0;
 				}
 
-				if (found == 1)
+				if (found == 1) {
+					found_color = board[r][c];
+					for (int n = 0; board[r][c + n] == found_color; n++)
+						board[r][c + n] = (found_color == RED) ? REDWIN : YELWIN;
+					
 					return 1;
+				}
 
 			}
 
@@ -163,8 +172,13 @@ int check_win(int rows, int cols, int board[rows][cols]) {
 						found = 0;
 				}
 				
-				if (found == 1)
+				if (found == 1) {
+					found_color = board[r][c];
+					for (int n = 0; board[r + n][c] == found_color; n++)
+						board[r + n][c] = (found_color == RED) ? REDWIN : YELWIN;
+					
 					return 1;
+				}
 
 			}
 
@@ -181,8 +195,13 @@ int check_win(int rows, int cols, int board[rows][cols]) {
 						found = 0;
 				}
 				
-				if (found == 1)
+				if (found == 1) {
+					found_color = board[r][c];
+					for (int n = 0; board[r + n][c + n] == found_color; n++)
+						board[r + n][c + n] = (found_color == RED) ? REDWIN : YELWIN;
+					
 					return 1;
+				}
 
 			}
 
@@ -199,8 +218,13 @@ int check_win(int rows, int cols, int board[rows][cols]) {
 						found = 0;
 				}
 				
-				if (found == 1)
+				if (found == 1) {
+					found_color = board[r][c];
+					for (int n = 0; board[r + n][c - n] == found_color; n++)
+						board[r + n][c - n] = (found_color == RED) ? REDWIN : YELWIN;
+					
 					return 1;
+				}
 
 			}
 		}
@@ -219,6 +243,7 @@ void render(int rows, int cols, int board[rows][cols], int sel_col, int turn) {
     printf("\033[2J\033[H");
     printf("\033[?25l");
 
+    // Print Disc above board during turn
     for (int i = 0; i < 2; i++){
 		for (int c = 0; c < cols; c++) {
 			if (c == sel_col) {
@@ -239,7 +264,7 @@ void render(int rows, int cols, int board[rows][cols], int sel_col, int turn) {
 	}
 
 
- 	// horizontal blue separator between rows
+ 	// horizontal blue separator at the top
     for (int c = 0; c < cols * 6 + 2; c++) {
         printf(BG_BLUE " " RESET);
     }
@@ -257,11 +282,17 @@ void render(int rows, int cols, int board[rows][cols], int sel_col, int turn) {
                 printf(BG_BLUE " " RESET);
 
                 // SLOT CONTENT (NOT blue background)
-                if (val == 1) {
+                if (val == RED) {
                     printf(RED_DISC "    " RESET);
                 }
-                else if (val == 2) {
+                else if (val == YELLOW) {
                     printf(YEL_DISC "    " RESET);
+                }
+                else if (val == REDWIN) {
+                	printf(REDWIN_DISC "    " RESET);
+                }
+                else if (val == YELWIN) {
+                	printf(YELWIN_DISC "    " RESET);
                 }
                 else {
                     printf("    "); // empty hole
