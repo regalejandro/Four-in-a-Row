@@ -19,6 +19,9 @@
 #ifndef SETTINGS_H
 #define SETTINGS_H
 
+#define CPU 0
+#define PVP 1
+
 typedef struct {
 	int rows;
 	int cols;
@@ -30,9 +33,8 @@ extern const GameRules CONNECT4;
 extern const GameRules CONNECT5;
 extern const GameRules CONNECT6;
 
-
-
 extern GameRules ruleset;
+extern int mode;
 
 void handle_args(int argc, char* argv[]);
 void enableRawMode(struct termios *old_tio);

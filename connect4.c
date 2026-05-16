@@ -43,7 +43,16 @@ int play_game(int rows, int cols, int board[rows][cols], int height[cols]) {
 
 	while (1) {
 
-		make_play(rows, cols, board, height, turn);
+
+		if (mode == CPU && turn == RED) {
+			make_play(rows, cols, board, height, turn);
+		}
+		/*else if (mode == CPU && turn == YELLOW) {
+			cpu_play();
+		}*/
+		else {
+			make_play(rows, cols, board, height, turn);
+		}
 
 		// print board
 		render(rows, cols, board, -1, turn);
@@ -119,8 +128,6 @@ int make_play(int rows, int cols, int board[rows][cols], int height[cols], int t
 	disableRawMode(&old_tio);
 
 	return sel_col;
-
-
 
 }
 

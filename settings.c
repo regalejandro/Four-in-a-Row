@@ -18,37 +18,39 @@ const GameRules CONNECT4 = {6, 7, 4};
 const GameRules CONNECT5 = {8, 9, 5};
 const GameRules CONNECT6 = {9, 11, 6};
 
-GameRules ruleset = {0};
-
+int mode = CPU;
+GameRules ruleset = CONNECT4;
 
 void handle_args(int argc, char* argv[]) {
 
-	if (argc > 1) {
+	if (argc == 1) {
+		return;
+	}
 
-		char* arg2 = argv[1];
+	if (argc > 3) {
+		perror("Too many arguments.\n");
+		exit(1);
+	}
 
-		if (strcmp(arg2, "3") == 0)
+	for (int n = 1; n < argc; n++) {
+		if (strcmp(argv[n], "3") == 0)
 			ruleset = CONNECT3;
-		else if (strcmp(arg2, "4") == 0)
+		else if (strcmp(argv[n], "4") == 0)
 			ruleset = CONNECT4;
-		else if (strcmp(arg2, "5") == 0)
+		else if (strcmp(argv[n], "5") == 0)
 			ruleset = CONNECT5;
-		else if (strcmp(arg2, "6") == 0)
+		else if (strcmp(argv[n], "6") == 0)
 			ruleset = CONNECT6;
+		else if (strcmp(argv[n], "pvp") == 0)
+			mode = PVP;
+		else if (strcmp(argv[n], "cpu") == 0)
+			mode = CPU;
 		else {
-			printf("Argument '%s' not a valid win condition\n", arg2);
+			printf("Argument '%s' not a valid argument\nEnter 'pvp' or 'cpu' for gamemode\nEnter a number for win condition (3, 4, 5, 6)\n", argv[n]);
 			exit(2);
 		}
 	}
-	else if (argc > 2) {
-		perror("Incorrect number of arguments.\n");
-		exit(1);
-	}
-	else {
-		ruleset = CONNECT4;
-	}
-
-
+	
 }
 
 void enableRawMode(struct termios *old_tio) {
