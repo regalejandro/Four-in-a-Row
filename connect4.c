@@ -11,6 +11,7 @@
 
 #include "connect4.h"
 #include "settings.h"
+#include "cpu.h"
 
 #define RED 1
 #define YELLOW 2
@@ -23,6 +24,10 @@ int main(int argc, char* argv[]) {
 
 	int board[ruleset.rows][ruleset.cols];	// Row-major array of gameboard
 	int height[ruleset.cols];	// Tracks current height of chips in each col
+
+	int val_map[ruleset.rows][ruleset.cols];
+	generate_val_map(ruleset.rows, ruleset.cols ,val_map);
+	//print_val_map(ruleset.rows, ruleset.cols ,val_map);
 
 	memset(board, 0, sizeof(board));
 	memset(height, 0, sizeof(height));
