@@ -68,6 +68,19 @@ void generate_val_map(int rows, int cols, int map[rows][cols]) {
 
 }
 
+int get_score(int turn, int rows, int cols, int board[rows][cols], int map[rows][cols]) {
+
+	int score = 0;
+	for (int r = 0; r < rows; r++) {
+		for (int c = 0; c < cols; c++) {
+			if (board[r][c] == turn)
+				score += map[r][c];
+		}
+	}
+
+	return score;
+}
+
 void print_val_map(int rows, int cols, int map[rows][cols]) {
 	for (int r = rows - 1; r >= 0; r--) {
 		for (int c = 0; c < cols; c++) {

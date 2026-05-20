@@ -25,8 +25,6 @@ int main(int argc, char* argv[]) {
 	int board[ruleset.rows][ruleset.cols];	// Row-major array of gameboard
 	int height[ruleset.cols];	// Tracks current height of chips in each col
 
-	int val_map[ruleset.rows][ruleset.cols];
-	generate_val_map(ruleset.rows, ruleset.cols ,val_map);
 	//print_val_map(ruleset.rows, ruleset.cols ,val_map);
 
 	memset(board, 0, sizeof(board));
@@ -42,6 +40,10 @@ int main(int argc, char* argv[]) {
 int play_game(int rows, int cols, int board[rows][cols], int height[cols]) {
 	int turn = RED;
 	int winner = 0;
+
+
+	int val_map[ruleset.rows][ruleset.cols];
+	generate_val_map(ruleset.rows, ruleset.cols ,val_map);
 
 	// print board
 	render(rows, cols, board, -1, turn);
@@ -257,6 +259,7 @@ void render(int rows, int cols, int board[rows][cols], int sel_col, int turn) {
 
     // Print Disc above board during turn
     for (int i = 0; i < 2; i++){
+    	printf("\t");
 		for (int c = 0; c < cols; c++) {
 			if (c == sel_col) {
 				if (turn == RED) {
@@ -277,14 +280,16 @@ void render(int rows, int cols, int board[rows][cols], int sel_col, int turn) {
 
 
  	// horizontal blue separator at the top
+ 	printf("\t");
     for (int c = 0; c < cols * 6 + 2; c++) {
         printf(BG_BLUE " " RESET);
     }
     printf("\n");
 
     for (int r = rows - 1; r >= 0; r--) {
-    	
+
         for (int sub = 0; sub < 2; sub++) {
+        	printf("\t");
         	printf(BG_BLUE " " RESET);
             for (int c = 0; c < cols; c++) {
 
@@ -319,6 +324,7 @@ void render(int rows, int cols, int board[rows][cols], int sel_col, int turn) {
         }
 
         // horizontal blue separator between rows
+        printf("\t");
         for (int c = 0; c < cols * 6 + 2; c++) {
             printf(BG_BLUE " " RESET);
         }

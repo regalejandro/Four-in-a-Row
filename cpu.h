@@ -16,6 +16,7 @@
 
 void generate_val_map(int rows, int cols, int map[rows][cols]);
 void print_val_map(int rows, int cols, int map[rows][cols]);
+int get_score(int turn, int rows, int cols, int board[rows][cols], int map[rows][cols]);
 
 
 
